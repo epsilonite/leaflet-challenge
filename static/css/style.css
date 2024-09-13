@@ -1,10 +1,16 @@
-body {
-  padding: 0;
-  margin: 0;
-}
-
-#map,
-body,
-html {
-  height: 100%;
-}
+body {padding:0; margin:0;}
+#map,body,html {height:100%;}
+.leaflet-popup-content-wrapper{color:white;}
+.popup-fbc127 .leaflet-popup-content-wrapper, 
+.popup-fbc127 .leaflet-popup-tip {background-color: #fbc127;}
+.popup-f57d15 .leaflet-popup-content-wrapper, 
+.popup-f57d15 .leaflet-popup-tip {background-color: #f57d15;}
+.popup-d44843 .leaflet-popup-content-wrapper, 
+.popup-d44843 .leaflet-popup-tip {background-color: #d44843;}
+.popup-9f2a63 .leaflet-popup-content-wrapper, 
+.popup-9f2a63 .leaflet-popup-tip {background-color: #9f2a63;}
+.popup-65156e .leaflet-popup-content-wrapper, 
+.popup-65156e .leaflet-popup-tip {background-color: #65156e;}
+.popup-280b54 .leaflet-popup-content-wrapper, 
+.popup-280b54 .leaflet-popup-tip {background-color: #280b54;}
+i {width:18px; height:18px; float:left; margin-right:8px; opacity:1;}

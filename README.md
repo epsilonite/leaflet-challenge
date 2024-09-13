@@ -5,6 +5,7 @@ The United States Geological Survey, or USGS for short, is responsible for provi
 The USGS is interested in building a new set of tools that will allow them to visualize their earthquake data. They collect a massive amount of data from all over the world each day, but they lack a meaningful way of displaying it. 
 
 We are tasked with developing a way to visualize USGS data that will allow them to better educate the public and other government organizations (and hopefully secure more funding) on issues facing our planet.
+[## Data Visualization](https://epsilonite.github.io/leaflet-challenge/)
 ## References
 **Discrete Color Gradient from Inferno:**
 Vega-Lite. (n.d.). Color schemes. Retrieved September 12, 2024, from https://vega.github.io/vega/docs/schemes/

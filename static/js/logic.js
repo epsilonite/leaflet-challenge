@@ -124,7 +124,7 @@ function createMap(earthquakes,tectonics,circleMarkers) {
   let myMap = L.map("map", {
     center: [37.09, -95.71],
     zoom: initZoom,
-    layers: [street, earthquakes, tectonics],
+    layers: [gray, earthquakes, tectonics],
     maxBounds: bounds,
     maxBoundsViscosity: 1.0
   });

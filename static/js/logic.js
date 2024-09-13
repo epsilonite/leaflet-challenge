@@ -17,9 +17,19 @@ const json = 'static/data/PB2002_boundaries.json';
 // Get the data with d3.
 d3.json(geojson).then(function(data) {
   // console.log(data);
+  let dL = JSON.parse(JSON.stringify(data.features));
+  let dR = JSON.parse(JSON.stringify(data.features));
+  dL.forEach(f => f.geometry.coordinates[0]+=360);
+  dR.forEach(f => f.geometry.coordinates[0]-=360);
+  let earthquakeFeatures = data.features.concat(dL,dR).sort((x,y)=>d3.ascending(y.properties.mag,x.properties.mag));
   d3.json(json).then(function(rows) {
     console.log(rows);
-    createFeatures(data.features.sort((x,y)=>d3.ascending(y.properties.mag,x.properties.mag)),rows.features);
+    let rL = JSON.parse(JSON.stringify(rows.features));
+    let rR = JSON.parse(JSON.stringify(rows.features));
+    rL.forEach(f => f.geometry.coordinates.forEach(c => c[0]+=360));
+    rR.forEach(f => f.geometry.coordinates.forEach(c => c[0]-=360));
+    let tectonicFeatures = rows.features.concat(rL,rR).sort((x,y)=>d3.ascending(y.properties.mag,x.properties.mag));
+    createFeatures(earthquakeFeatures,tectonicFeatures);
   });
 });
 
@@ -74,23 +84,28 @@ function createFeatures(earthquakeData,tectonicData) {
 // Create map
 function createMap(earthquakes,tectonics,circleMarkers) {
   // Create the base layers.
+  let bounds = new L.LatLngBounds(new L.LatLng(-90,-360), new L.LatLng(90,360));
+  let street_free = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  });
   let satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-    minZoom: 0,
+    minZoom: 2,
     attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
   });
   var street = L.tileLayer('https://tile.jawg.io/jawg-light/{z}/{x}/{y}{r}.png?access-token={accessToken}', {
     attribution: '<a href="https://jawg.io" title="Tiles Courtesy of Jawg Maps" target="_blank">&copy; <b>Jawg</b>Maps</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    minZoom: 0,
+    minZoom: 2,
     maxZoom: 22,
     accessToken: ' m5Y4FMaF1cDbNvJ2BRVZfIW68vIcw3Ve3nM9d28vh1uSeckwb0QriuvQ5hsAnSLT'
   });
   var gray = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
     attribution: 'Tiles &copy; Esri &mdash; Esri, DeLorme, NAVTEQ',
-    minZoom: 0,
+    minZoom: 2,
     maxZoom: 16
   });
   var terrain = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}', {
     attribution: 'Tiles &copy; Esri &mdash; Sources: GEBCO, NOAA, CHS, OSU, UNH, CSUMB, National Geographic, DeLorme, NAVTEQ, and Esri',
+    minZoom: 2,
     maxZoom: 13
   });
   // Create a baseMaps object.
@@ -109,7 +124,9 @@ function createMap(earthquakes,tectonics,circleMarkers) {
   let myMap = L.map("map", {
     center: [37.09, -95.71],
     zoom: initZoom,
-    layers: [street, earthquakes, tectonics]
+    layers: [street, earthquakes, tectonics],
+    maxBounds: bounds,
+    maxBoundsViscosity: 1.0
   });
   myMap.on('zoomend', function() {             
     var currentZoom = myMap.getZoom();
